@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour
     public float forwardSpeed;
     private int desiredLane=1;//0: left, 1:middle, 2:right
     public float laneDistance;//Şeritler arası mesafe//Yolu genişletmek istenirse burdan değer verilir.
+    public float jumpForce;
+    public float gravity = -20;
     
 
 
@@ -24,6 +26,7 @@ public class PlayerController : MonoBehaviour
     {
         //Playerımıza Z eksenindeki hareketine hız veriyoruz.
          direction.z = forwardSpeed;
+         
 
         //Playerin başlangıç konumunu belirliyoruz.
         //Player ın y ve z konumunu sabitliyoruz.
@@ -42,15 +45,28 @@ public class PlayerController : MonoBehaviour
           }
 
           transform.position = targetPosition;
-          //Hareketleri biraz daha yumuşatmak için
-          // transform.position = Vector3.Lerp(transform.position, targetPosition, 50 * Time.deltaTime);
-          //       serit_0  serit_1  serit_3
-          //      |       |        |        |
-          //      |       |        |        |
-          //      |       |        |        |
-          // -1       0       1        2       3
+        //Hareketleri biraz daha yumuşatmak için
+        // transform.position = Vector3.Lerp(transform.position, targetPosition, 50 * Time.deltaTime);
+        //       serit_0  serit_1  serit_3
+        //      |       |        |        |
+        //      |       |        |        |
+        //      |       |        |        |
+        // -1       0       1        2       3
 
-          //Klavye yön tuşları ile hareket ediyoruz
+        //Klavye yön tuşları ile hareket ediyoruz
+        if (controller.isGrounded)
+        {
+            direction.y = -1;
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                playerJump();
+            }
+        }
+        else
+        {
+            direction.y += gravity * Time.deltaTime;
+        }
+       
           if (Input.GetKeyDown(KeyCode.RightArrow))
           {
               Debug.Log("Sağ");
@@ -72,5 +88,9 @@ public class PlayerController : MonoBehaviour
     {
         //Oyuncumuzun  zamana bağlı hareketini sağlıyor.
        controller.Move(direction * Time.fixedDeltaTime);
+    }
+    private void playerJump()
+    {
+        direction.y = jumpForce;
     }
 }

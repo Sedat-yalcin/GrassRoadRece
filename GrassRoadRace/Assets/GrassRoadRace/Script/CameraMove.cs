@@ -5,15 +5,38 @@ using System.Collections;
 public class CameraMove : MonoBehaviour {
 
 	public float moveSpeed;
-	public GameObject mainCamera;
+	private GameObject mainCamera;
+
+	private Transform target;
+	private Vector3 offset;
 
 	// Use this for initialization
 	void Start () {
-		mainCamera.transform.localPosition = new Vector3 ( 0, 0, 0 );
-		mainCamera.transform.localRotation = Quaternion.Euler (18, 180, 0);
-	
+
+		//Udemy Code
+		//Kod ile çocugun pozisiyonu alındı
+		target = GameObject.Find("Player").transform;
+		//Youtube
+		//Kamera ile hedefin arasındaki mesafe hesaplandı
+		offset = transform.position - target.position;
+
+		//Original Code
+		//mainCamera.transform.localPosition = new Vector3 ( 0, 10, -10 );
+		//mainCamera.transform.localRotation = Quaternion.Euler (0, 0, 0);
+
 	}
-	
+	void LateUpdate()
+	{
+		//Udemy Code
+		//cameraToPlayerDistance = new Vector3(playerPosition.position.x, transform.position.y, playerPosition.position.z - 10);
+		//transform.position = Vector3.Lerp(transform.position, cameraToPlayerDistance, Time.deltaTime);
+		//Youtube
+		//Kamera ile hedefin arasındaki mesafe ile hedefin pozisiyuna eklendi.
+		//Vector3 newPosition = new Vector3(transform.position.x, transform.position.y, offset.z + target.position.z);
+	    //transform.position = newPosition;
+
+	}
+
 	// Update is called once per frame
 	void Update () {
 
@@ -22,24 +45,34 @@ public class CameraMove : MonoBehaviour {
 
 	void FixedUpdate()
 	{
-		MoveObj ();
-		
-		if (Input.GetKeyDown (KeyCode.A)) {
+		moveCameraWithTarget();
+
+		//Original Code
+		/*if (Input.GetKeyDown (KeyCode.A)) {
 			ChangeView01();
 		}
 		
 		if (Input.GetKeyDown (KeyCode.S)) {
 			ChangeView02();
-		}
+		}*/
+		
 	}
 	
 	
-	void MoveObj() {		
-		float moveAmount = Time.smoothDeltaTime * moveSpeed;
-		transform.Translate ( 0f, 0f, moveAmount );	
+	void moveCameraWithTarget() {
+
+		/*float moveAmount = Time.smoothDeltaTime * moveSpeed;
+		transform.Translate ( 0f, 0f, moveAmount );	*/
+
+		// Kamera ile hedefin arasındaki mesafe ile hedefin pozisiyuna eklendi.
+		Vector3 newPosition = new Vector3(transform.position.x, transform.position.y, offset.z + target.position.z);
+
+		transform.position = Vector3.Lerp(transform.position, newPosition, 10 * Time.deltaTime);
+
 	}
 
 
+	//Original Code
 
 	void ChangeView01() {
 		transform.position = new Vector3 (0, 2, 10);
